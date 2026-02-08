@@ -1,0 +1,12 @@
+# Data Acquisition and Financial Analysis
+yfinance
+pandas
+
+# Numerical Methods and Stochastic Simulation
+numpy
+
+# Data Visualization
+matplotlib
+
+# Jupyter Support (for your .ipynb file)
+ipykernel
