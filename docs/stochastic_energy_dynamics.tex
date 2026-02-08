@@ -1,0 +1,57 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath, amssymb, geometry}
+\geometry{margin=1in}
+
+\begin{document}
+
+\section*{Technical Analysis: Mean-Reverting Oil Price Dynamics}
+
+\subsection*{1. Model Selection: Why Ornstein-Uhlenbeck?}
+Standard equity models typically utilize Geometric Brownian Motion (GBM), which assumes a constant upward drift. However, commodity markets such as Brent Crude are fundamentally different due to supply and demand equilibrium. We select the **Ornstein-Uhlenbeck (OU) process** because it accounts for \textbf{Mean Reversion}—the tendency of price levels to return to a long-term equilibrium ($\theta$) after a shock. 
+
+\subsection*{2. Stochastic Differential Equation (SDE)}
+The spot price $X_t$ is modeled by the following SDE:
+\begin{equation}
+    dX_t = \kappa (\theta - X_t)dt + \sigma dW_t
+\end{equation}
+Where:
+\begin{itemize}
+    \item $\kappa$: Reversion speed (calculated via regression or observation).
+    \item $\theta$: The long-term mean price, empirically derived as \textbf{\$79.75}.
+    \item $\sigma$: Annualized volatility, empirically derived as \textbf{33.93\%}.
+    \item $dW_t$: Increment of a standard Wiener process.
+\end{itemize}
+
+\subsection*{3. Mathematical Proof using Ito's Lemma}
+To solve for the price at time $t$, we apply **Ito's Lemma** to the transformation $f(X_t, t) = X_t e^{\kappa t}$.
+Applying the Lemma:
+\begin{equation}
+    d(X_t e^{\kappa t}) = \frac{\partial f}{\partial t}dt + \frac{\partial f}{\partial X}dX_t + \frac{1}{2}\frac{\partial^2 f}{\partial X^2}(dX_t)^2
+\end{equation}
+
+Calculating partial derivatives:
+\begin{itemize}
+    \item $\frac{\partial f}{\partial t} = \kappa X_t e^{\kappa t}$
+    \item $\frac{\partial f}{\partial X} = e^{\kappa t}$
+    \item $\frac{\partial^2 f}{\partial X^2} = 0$
+\end{itemize}
+
+Substituting Eq. (1) into the expansion:
+\begin{equation}
+    d(X_t e^{\kappa t}) = \kappa X_t e^{\kappa t} dt + e^{\kappa t} [\kappa(\theta - X_t)dt + \sigma dW_t]
+\end{equation}
+
+Simplifying the drift terms:
+\begin{equation}
+    d(X_t e^{\kappa t}) = \kappa \theta e^{\kappa t} dt + \sigma e^{\kappa t} dW_t
+\end{equation}
+
+\subsection*{4. Numerical Discretization}
+For the Python implementation in \texttt{src/ou\_model.py}, we utilize the \textbf{Euler-Maruyama method}. The discrete update rule is:
+\begin{equation}
+    X_{t+\Delta t} = X_t + \kappa(\theta - X_t)\Delta t + \sigma \sqrt{\Delta t} \epsilon
+\end{equation}
+Where $\epsilon \sim N(0,1)$. This allows for the high-resolution simulation of paths that oscillate around the equilibrium mean.
+
+\end{document}
