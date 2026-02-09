@@ -1,12 +1,10 @@
-# Data Acquisition and Financial Analysis
-yfinance
-pandas
+# Data Acquisition
+yfinance>=0.2.31
 
-# Numerical Methods and Stochastic Simulation
-numpy
+# Financial Data & Numerical Methods
+pandas>=2.0.0
+numpy>=1.24.0
+scipy>=1.10.0
 
-# Data Visualization
-matplotlib
-
-# Jupyter Support (for your .ipynb file)
-ipykernel
+# Visualization
+matplotlib>=3.7.0
