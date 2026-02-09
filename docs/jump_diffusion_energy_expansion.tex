@@ -1,0 +1,55 @@
+\documentclass[12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+
+\title{Stochastic Energy Dynamics: \\ From Mean Reversion to Merton Jump-Diffusion}
+\date{} % This explicitly empties the date field so \maketitle won't show it
+
+\begin{document}
+
+\maketitle
+
+\section{Introduction}
+Modeling energy commodities like Brent Crude requires accounting for two distinct market behaviors: long-term equilibrium (mean reversion) and sudden, discontinuous price shocks (jumps). This paper provides the mathematical derivation for transitioning from a standard Ornstein-Uhlenbeck (OU) process to a Merton Jump-Diffusion (MJD) framework.
+
+\section{Phase 1: The Ornstein-Uhlenbeck Process}
+The foundation of our model assumes that prices $S_t$ tend to revert to a long-term mean $\theta$. The continuous dynamics are described by the SDE:
+\begin{equation}
+    dS_t = \kappa(\theta - S_t)dt + \sigma S_t dW_t
+\end{equation}
+Where $dW_t$ is a standard Wiener process. Under this model, the returns are assumed to be normally distributed, represented by the probability density function:
+\begin{equation}
+    f(x) = \frac{1}{\sigma\sqrt{2\pi t}} e^{-\frac{(x-\mu)^2}{2\sigma^2t}}
+\end{equation}
+\textit{Technical Reasoning:} While the OU model captures the equilibrium of the oil market, it fails to account for the "Fat-Tails" (high kurtosis) observed during geopolitical crises.
+
+\section{Phase 2: Merton Jump-Diffusion Expansion}
+To address the inadequacy of the normal distribution in energy markets, we introduce a Poisson-driven jump component.
+
+\subsection{The Expanded SDE}
+We define the new price process by adding a jump term $dJ_t$:
+\begin{equation}
+    dS_t = \kappa(\theta - S_t)dt + \sigma S_t dW_t + S_t dJ_t
+\end{equation}
+The jump term is defined as $dJ_t = (Y-1) dN_t$, where:
+\begin{itemize}
+    \item $N_t$ is a Poisson process with intensity $\lambda$, such that $P(dN_t = 1) = \lambda dt$.
+    \item $Y$ is the random jump magnitude, where $\ln(Y) \sim N(\mu_j, \sigma_j^2)$.
+\end{itemize}
+
+\subsection{Log-Price Transformation}
+For numerical stability and to prevent negative prices in our simulation engine, we apply Itô's Lemma to the log-price $x_t = \ln S_t$. The resulting dynamics are:
+\begin{equation}
+    dx_t = \left[ \kappa(\ln \theta - x_t) - \frac{1}{2}\sigma^2 \right]dt + \sigma dW_t + \ln(Y) dN_t
+\end{equation}
+
+\section{Conclusion: Technical Justification}
+The transition to Jump-Diffusion is necessitated by the empirical observation of "Black Swan" events in Brent Crude data. 
+\begin{itemize}
+    \item \textbf{Volatility Separation}: By isolating jumps via the intensity $\lambda$, we obtain a "Clean $\sigma$" for the diffusion component, preventing the overestimation of daily market noise.
+    \item \textbf{Risk Management}: The MJD model provides a more accurate Value-at-Risk (VaR) by accounting for the discontinuous price "spikes" that a smooth OU process ignores.
+\end{itemize}
+
+\end{document}
